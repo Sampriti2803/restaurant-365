@@ -8,13 +8,12 @@ from PIL import ImageTk
 
 
 class Table:
-    def __init__(self, name, capacity, occupied = False):
+    def __init__(self, name, capacity):
         self.name = "Table " + name
         self.capacity = capacity
-        self.occupied = occupied
 
 
-column_names = {"Table Number": "A", "Capacity": "B", "Occupied": "C"}
+column_names = {"Table Number": "A", "Capacity": "B"}
 final_directory = ""
 
 def excel(registration_number):
@@ -98,15 +97,15 @@ def working_hours(registration_number):
     closingtimedropdown.place(x=750, y=350)
 
     continuebutton = Button(root, bg="#015450", fg="white", activebackground="#015450", activeforeground="white",
-                            text="Continue", font=('Garamond', 22), bd=0, cursor='hand2', command = lambda:(addtiming(), number_of_tables(registration_number, root)))
+                            text="Continue", font=('Garamond', 22), bd=0, cursor='hand2', command = lambda:(addtiming(), number_of_tables(registration_number, root, openingtimedropdown.get(), closingtimedropdown.get())))
     continuebutton.place(x=595, y=450)
     root.mainloop()
 
-def number_of_tables(registration_number, root1):
+def number_of_tables(registration_number, root1, openingtime, closingtime):
 
     def tablecount_check():
         if (tablecount.get().strip().isdigit() is True and int(tablecount.get().strip()) > 0):
-            tables(tablecount.get().strip(), root)
+            tables(tablecount.get().strip(), root, openingtime, closingtime)
         else:
             messagebox.showerror('Error', 'Invalid Table Count')
     root1.destroy()
@@ -134,7 +133,7 @@ def number_of_tables(registration_number, root1):
     root.mainloop()
 
 
-def tables(tablecount, root1):
+def tables(tablecount, root1, openingtime, closingtime):
 
     def tabledata(capacity):
         newrow = {"SNo": "A", "Dish": "B", "Quantity": "C"}
@@ -152,7 +151,6 @@ def tables(tablecount, root1):
                 exec(f'table = table_{x}')
                 exec(f"worksheet[f'{column_names['''Table Number''']}{x+1}'] = table_{x}.name")
                 exec(f"worksheet[f'{column_names['''Capacity''']}{x+1}'] = table_{x}.capacity")
-                exec(f"worksheet[f'{column_names['''Occupied''']}{x+1}'] = table_{x}.occupied")
                 try:
                     worksheetnew = workbook[f'Table {x}']
                 except KeyError:
@@ -160,6 +158,41 @@ def tables(tablecount, root1):
                     worksheetnew = workbook[f'Table {x}']
                     worksheetnew.append(list(newrow.keys()))
                 workbook.save(final_directory)
+
+    def timing(openingtime, closingtime):
+        workbook = load_workbook(final_directory)
+        worksheet = workbook["Tables"]
+        l=[]
+        for x in range(int(openingtime[0:2]), int(closingtime[0:2])+1):
+            if openingtime.endswith("30") is True:
+                l.append(openingtime)
+                continue
+            elif x == int(closingtime[0:2]) and closingtime.endswith("00") is True:
+                l.append(closingtime)
+                break
+            elif len(str(x)) == 1:
+                l.append(f'0{x}:00')
+                l.append(f'0{x}:30')
+            else:
+                l.append(f'{x}:00')
+                l.append(f'{x}:30')
+
+        d={}
+        for i in l:
+            if (67 + l.index(i)) > 90:
+                d[i] = 'A'+chr(l.index(i)-24+65)
+                continue
+            d[i] = chr(67 + l.index(i))
+
+        for i in d:
+            for j in range(int(tablecount)+1):
+                if j == 0:
+                    worksheet[d[i]+str(j+1)] = i
+                else:
+                    worksheet[d[i]+str(j+1)] = False
+
+        workbook.save(final_directory)
+            
 
 
     root1.destroy()
@@ -208,7 +241,7 @@ def tables(tablecount, root1):
 
     continuebutton = Button(root, bg="#015450", fg="white", activebackground="#015450", activeforeground="white",
                             text="Continue", font=('Garamond', 20), bd=0, cursor='hand2',
-                            command=lambda: (tabledata(capacity)))
+                            command=lambda: (tabledata(capacity),timing(openingtime,closingtime)))
     continuebutton.place(x=590, y=570)
 
     # Start the main loop

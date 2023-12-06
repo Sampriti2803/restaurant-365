@@ -61,7 +61,7 @@ def add_dish():
             f.pack()
             promptlabel=Label(f,text=f"{dish_name} exists! do you want to update prices?")
             promptlabel.place(x=300,y=200)
-            yes=Button(f,text="YES",command=lambda:(update_prices()))
+            yes=Button(f,text="YES",command=lambda:(update_prices(), close_window(root2)))
             yes.place(x=300,y=300)
             no=Button(f,text="NO",command=lambda:(close_window(root2)))
             no.place(x=400,y=300)

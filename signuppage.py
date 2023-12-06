@@ -94,7 +94,19 @@ def signup_page(root1):
             messagebox.showerror('Error', 'Enter Address')
         elif state_ not in state['values']:
             messagebox.showerror('Error', 'Choose State from the dropdown')
-        elif pincode_.isdigit() is False or len(pincode_) != 6 or int(pincode_[0:2]) not in (11, 12, 13, 14, 15, 16, 17,                                                                                 97, 98, 99):
+        elif pincode_.isdigit() is False or len(pincode_) != 6 or int(pincode_[0:2]) not in (11, 12, 13, 14, 15, 16, 17,
+                                                                                             18, 19, 20, 21, 22, 23, 24,
+                                                                                             25, 26, 27, 28, 29, 30, 31,
+                                                                                             32, 33, 34, 36, 37, 38, 39,
+                                                                                             40, 41, 42, 43, 44, 45, 46,
+                                                                                             47, 48, 49, 50, 51, 52, 53,
+                                                                                             56, 57, 58, 59, 60, 61, 62,
+                                                                                             63, 64, 67, 68, 69, 70, 71,
+                                                                                             72, 73, 74, 75, 76, 77, 78,
+                                                                                             79, 80, 81, 82, 83, 84, 85,
+                                                                                             90, 91, 92, 93, 94, 95, 96,
+                                                                                             97, 98, 99):
+            messagebox.showerror('Error', 'Enter Valid Pincode')
             messagebox.showerror('Error', 'Enter Valid Pincode')
         elif var.get() == 0:  # Error if terms & condition box is not checked
             messagebox.showerror('Error', 'Accept our Terms and Conditions')
